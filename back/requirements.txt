@@ -1,0 +1,6 @@
+fastapi==0.104.1
+uvicorn==0.12.3
+python-dotenv==1.0.0
+qdrant-client==1.7.2
+transformers==4.37.2
+pillow==10.2.0

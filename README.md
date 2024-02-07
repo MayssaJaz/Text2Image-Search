@@ -5,11 +5,13 @@ This project aims create a search engine designed specifically for retrieving im
 ## What is CLIP (Contrastive Language-Image Pretraining) Model?
 CLIP is a neural network that has undergone training using a wide array of (image, text) pairs. By leveraging natural language instructions, it excels in accurately predicting the most relevant text snippet corresponding to a given image. This proficiency stems from its training on a large dataset inclusive of image-caption pairs.
 
-Image_Here
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/CLIP.png">
+
 
 CLIP achieves a unified embedding space (Latent Space) for images and text, facilitating direct comparisons between the two forms of data. This is achieved through training the model to minimize the distance between related images and texts while maximizing the separation between unrelated pairs. Thus, we can compare an image and a text by computing the cosine similarity between their respective embedding vectors.
 
-Image_Here
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/embeddings.png">
+
 
 ## Dataset
 The dataset consists of 1807 images showcasing various objects:
@@ -18,7 +20,7 @@ The dataset consists of 1807 images showcasing various objects:
 ## Architecture
 
 The following image describes the architecture of the designed solution. The whole solution runs on Docker containers. This decision was made to mitigate issues stemming from compatibility and dependencies in order to enhance the solution's reliability and consistency.
-Image_Here
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/architecture.jpg">
 
 
 The architecture is based on three different components:
@@ -26,7 +28,7 @@ The architecture is based on three different components:
    - **Role:** This container functions as the back-end server responsible for handling search queries. It processes textual queries and retrieves the relevant images from the dataset.
    - **Logic:** On the startup of the server, there's an automatic process that retrieves all images from the dataset. It then generates embeddings for each image and stores them individually in the Qdrant vector database. Note that this process may require some time to complete due to its complexity. 
   
-Image_here
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/startup.jpg">
 
 After this process, the server becomes capable of accepting requests to search for images based on textual queries sent by the client app.
    - **Contents:**
@@ -46,7 +48,7 @@ After this process, the server becomes capable of accepting requests to search f
 
    - **Logic:** The container initially receives a list of embeddings for all the dataset images from the back-end, storing them within a collection. When the back-end requests a similarity search for a text query from the Qdrant Container, the Qdrant engine retrieves the image embeddings stored within the collection that have the highest cosine similarity with the provided text.
 
-Image_Here
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/search_similarity.jpg">
 
 ## Run Solution
 In order to run the solution, follow these steps:

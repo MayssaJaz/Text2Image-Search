@@ -1,0 +1,63 @@
+.layout {
+    min-height: 100vh;
+  }
+  
+  .header {
+    background-color: purple;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .content {
+    padding: 50px 0;
+  }
+  
+  .search-container {
+    text-align: center;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .search-input {
+    width: 60%;
+    max-width: 300px;
+  }
+  
+  .card-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .image-card {
+    width: 240px;
+    margin: 16px;
+  }
+  
+  .image {
+    height: 180px;
+  }
+  
+  .footer {
+    text-align: center;
+    background-color: #f0f2f5;
+    padding: 20px 0;
+    font-weight: bold;
+  }
+  
+  /* Responsive Styles */
+  
+  @media screen and (max-width: 768px) {
+    .search-input {
+      width: 80%; /* Adjust width for smaller screens */
+    }
+    
+    .image-card {
+      width: 100%; /* Make cards take full width on smaller screens */
+      margin: 16px 0; /* Adjust margin for better spacing */
+    }
+  }  

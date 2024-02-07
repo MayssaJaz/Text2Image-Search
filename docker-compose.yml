@@ -20,3 +20,14 @@ services:
       - DATASET_PATH=./dataset
       - MODEL_ID=openai/clip-vit-base-patch32
       - QDRANT_URL=http://qdrant_container:6333
+      - COLLECTION_NAME=image_search
+  front:
+    build:
+      context: front
+    ports:
+      - "3000:3000"
+    depends_on:
+      - fastapi
+    environment:
+      - REACT_APP_BACK_URL=http://localhost:8000
+      - REACT_APP_IMAGES_URL=http://localhost:8000/images

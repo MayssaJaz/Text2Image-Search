@@ -67,11 +67,14 @@ In order to run the solution, follow these steps:
 - **Query =** Black dog
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_1.png">
 
+
 - **Query =** White shirt
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_2.png">
 
+
 - **Query=** Green grass
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_3.png">
+
 
 - **Query=** Red car
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_4.png">
@@ -81,13 +84,16 @@ In order to run the solution, follow these steps:
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate1.png">
 It's evident that in the third image, there is both a dog and a cat present. This suggests that the cat was mistakenly perceived as a dog in our case.
 
+
 - **Query =** A woman with blond hair
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate2.png">
 A more complex query generated irrelevant results. As we can see, the only image that is accurate is the second one.
 
+
 - **Query=** White pants
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate3.png">
 In this scenario, it's evident that the color of the shirt and the pants were confused, resulting in inaccurate outcomes in the 3rd, 4th, and 5th images.
+
 
 - **Query=** Two cats
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate4.png">

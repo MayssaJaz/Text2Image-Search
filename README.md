@@ -65,28 +65,55 @@ In order to run the solution, follow these steps:
 ## Evaluation
 ### Accurate results
 - **Query =** Black dog
-  ![Black dog](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_1.png)
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_1.png">
 
 - **Query =** White shirt
-  ![White shirt](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_2.png)
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_2.png">
 
-- **Query =** Green grass
-  ![Green grass](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_3.png)
+- **Query=** Green grass
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_3.png">
 
-- **Query =** Red car
-  ![Red car](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_4.png)
+- **Query=** Red car
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_4.png">
 
 ### Inaccurate results
 - **Query =** Two dogs
-  ![Two dogs](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate1.png)
-
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate1.png">
+It's evident that in the third image, there is both a dog and a cat present. This suggests that the cat was mistakenly perceived as a dog in our case.
 - **Query =** A woman with blond hair
-  ![A woman with blond hair](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate2.png)
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate2.png">
+A more complex query generated irrelevant results. As we can see, the only image that is accurate is the second one.
 
-- **Query =** White pants
-  ![White pants](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate3.png)
+- **Query=** White pants
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate3.png">
+In this scenario, it's evident that the color of the shirt and the pants were confused, resulting in inaccurate outcomes in the 3rd, 4th, and 5th images.
+- **Query=** Two cats
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate4.png">
+While the outcomes of this query was not as poor as those from previous queries, it's important to emphasize that the 5th image is entirely inaccurate as it doesn't even represent a picture of a cat.
 
-- **Query =** Two cats
-  ![Two cats](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate4.png)
-  
+**Important remark:** Just to clarify, the inaccurate queries were not due to insufficient data. Each query had a minimum of five matching images. Therefore, we decided to analyze a dataset containing 1807 instances to verify if there were indeed images corresponding to the query before evaluating it with our search engine. 
+
+**Explanation:** 
+For the innacurate query results containing a number, the OpenAI CLIP model may encounter challenges with systematic tasks, particularly counting the number of objects (See: [OpenAI CLIP](https://openai.com/research/clip). In addition, the model may face difficulties in understanding the context of queries such as confusing the colors of the shirt and the pants, especially when dealing with data it hasn't been exposed to during training.
+
 ### Areas to improve
+- Having a labeled dataset containing pairs of images and corresponding captions, the caption serves as the ground truth against which we evaluate our search results. (Note: we already generated our labeled dataset inside `docs/labeled_data/data.csv` (See the process: `docs/notebook/captions_generation.ipynb`) that has two columns the file name and the caption of each image in our dataset using the OpenClip **CoCa (Contrastive Captioners)** that was designed for generating images captions.)
+
+- Ensure the generation of queries that are human-generated and cover a broad spectrum of topics and concepts that are relevant to the dataset. These queries should encompass diverse aspects, including concepts such as colors, shapes, and proximity of two objects as well as more intricate queries requiring contextual understanding, such as those that are prone to misinterpretation in evaluations (e.g the color of a shirt = the color of pants in our case).
+
+- For the evaluation phase, since we are dealing with a search engine problem, we can use metrics that are widely used to measure how relevant are documents to the a specific query such as **Precision@K**, **Recall@K** and **Normalized Discounted Cumulative Gain@K (nDCG@K)**.
+## Next Step
+- Fine-tune our model by using the labeled dataset generated in  `docs/labeled_data/data.csv`. We'll then assess its performance across various queries we're preparing.
+
+- Expand our dataset by acquiring more data and labeling it, followed by retraining the model as part of an MLOps pipeline.
+
+- Exlore alternative models such as the **BLIP** model and benchmark the results to assess their effectiveness based on various criterias (Relevance / Speed / Resource Consumption...).
+## Resources
+- **Kaggle dataset:** https://www.kaggle.com/datasets/pavansanagapati/images-dataset
+- **CLIP model on hugging face:** https://huggingface.co/openai/clip-vit-base-patch32
+- **CLIP model paper:** https://arxiv.org/pdf/2103.00020.pdf
+- **Qdrant similarity search:** https://qdrant.tech/documentation/concepts/search/
+- **Qdrant github repositories:** https://github.com/qdrant/qdrant_demo +  https://github.com/qdrant/qdrant-client
+- **Image classification Benchmark (for generating captions)** https://paperswithcode.com/sota/image-classification-on-imagenet
+- **OpenClip repository:** https://github.com/mlfoundations/open_clip/tree/main
+- **BLIP model:** https://huggingface.co/docs/transformers/model_doc/blip

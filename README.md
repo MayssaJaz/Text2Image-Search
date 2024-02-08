@@ -1,74 +1,68 @@
 # Text2Image-Search
+
 ## Purpose of the Project
 This project aims create a search engine designed specifically for retrieving images from a dataset using textual queries, a process commonly known as text-to-image search. We utilize the CLIP (Contrastive Language-Image Pretraining) from OpenAI, as the foundation for conducting these searches efficiently.
 ## What is CLIP (Contrastive Language-Image Pretraining) Model?
 CLIP is a neural network that has undergone training using a wide array of (image, text) pairs. By leveraging natural language instructions, it excels in accurately predicting the most relevant text snippet corresponding to a given image. This proficiency stems from its training on a large dataset inclusive of image-caption pairs.
 
-CLIP achieves a unified embedding space for images and text, facilitating direct comparisons between the two forms of data. This is achieved through training the model to minimize the distance between related images and texts while maximizing the separation between unrelated pairs.
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/CLIP.png">
 
 
+CLIP achieves a unified embedding space (Latent Space) for images and text, facilitating direct comparisons between the two forms of data. This is achieved through training the model to minimize the distance between related images and texts while maximizing the separation between unrelated pairs. Thus, we can compare an image and a text by computing the cosine similarity between their respective embedding vectors.
+
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/embeddings.png">
+
+
+## Dataset
+The dataset consists of 1807 images showcasing various objects:
+**humans, cats, dogs, cars, bikes, horses and flowers**. You can find the analysis of our dataset in the `notebook/images_dataset_analysis.ipynb`. The images come in different file formats including JPG, PNG and BMP.
 
 ## Architecture
 
-The following 
-### 1. FastAPI Backend Microservice
-The core of the project is a FastAPI backend microservice responsible for handling incoming requests, processing fingerprint data, and executing a matching algorithm.
-
-### 2. MySQL Server
-The microservice is connected to a MySQL server that hosts a database containing fingerprints. This database stores the target fingerprint images against which incoming fingerprints are matched.
-## Steps
-### Image Pre-Processing Workflow
-The Fingerprint Matching Microservice processes input fingerprint images through a series of steps to enhance the quality of patterns, improve matching accuracy, and ensure effective comparison against target fingerprints. The following steps outline the image pre-processing workflow:
-
-- 1. Background Removal to ensure that we focus only on fingerprints details.
-
-- 2. Adaptive Sharpening Filter to  enhance the contrast and sharpen the details within the image.
+The following image describes the architecture of the designed solution. The whole solution runs on Docker containers. This decision was made to mitigate issues stemming from compatibility and dependencies in order to enhance the solution's reliability and consistency.
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/architecture.jpg">
 
 
-- 3. 4-Step Enhancement Process
+The architecture is based on three different components:
+### 1. FastAPI Container
+   - **Role:** This container functions as the back-end server responsible for handling search queries. It processes textual queries and retrieves the relevant images from the dataset.
+   - **Logic:** On the startup of the server, there's an automatic process that retrieves all images from the dataset. It then generates embeddings for each image and stores them individually in the Qdrant vector database. Note that this process may require some time to complete due to its complexity. 
+  
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/startup.jpg">
 
-  - Normalize the Image
-  - Find Region of Interest (ROI)
-  - Estimate Local Orientation of Ridges
-  - Compute Major Frequency of Ridges
-  - Enhance fingerprint image via oriented filters
+After this process, the server becomes capable of accepting requests to search for images based on textual queries sent by the client app.
+   - **Contents:**
+      - `main.py`: the entry point to our back-end app.
+      - `utils`:
+        - `qdrant_vector_database.py`: contains a class designed for interacting with the Qdrant database. This class is responsible for managing tasks such as storing image embeddings in Qdrant and retrieving the most similar images based on textual queries. Note that here we use the built in **Cosine similarity** metric for Qdrant to make the process of retrieving faster.
+        -  `model_conf.py`: serves the purpose of handling various aspects related to working with our model **(openai/clip-vit-base-patch32)**. It saves the model to the device and retrieves  its associated tokenizer and processor.
+        -  `embeddings_handlers:`
+            - `images_embeddings.py`: responsible for generating images embeddings.
+            - `text_embeddings.py`: responsible for generating text embeddings.
+### 2. ReactJs Container
+   - **Role:** This container is the front-end of our solution. It is a straightforward and simple interface. Users can input text queries thanks to a search bar to find images similar to their query.
+   - **Logic:** This component allows users to input a text query via the search bar. Once the user submits the query, it sends the text to the back-end server through the /search/images endpoint and awaits a response. Upon receiving the response, which consists of a list of URLs representing the most similar images to the query, it displays these images to the user.
 
-### Minutiae Feature Extraction
-This step may take a while depending on the image. It generates a **result.png** file that contains the input image with minutiae points: red circles for ridge endings and blue circles for bifurcations.
-### Matching Fingerprint
-Upon successful features extraction from input image, we compare the **result.png** image with all the images contained inside the **target_folder**. The comparison is done using SIFT (Scale-Invariant Feature Transform) to extract keypoints and their descriptors from the image then we use FLANN (Fast Library for Approximate Nearest Neighbors) to compute the score for each target image.
-## How to run solution?
-### With Docker
-- Run the following command inside the root folder:
-   ```bash
+### 3. Qdrant Container
+   - **Role:** This container functions as a specialized database tailored for storing high-dimensional vectors, such as our image embeddings. Unlike traditional databases, it's optimized for efficiently querying these vectors. It employs various similarity search methods, including **Cosine Similarity**, which is the approach we used in this project for conducting searches based on similarity.
+
+   - **Logic:** The container initially receives a list of embeddings for all the dataset images from the back-end, storing them within a collection. When the back-end requests a similarity search for a text query from the Qdrant Container, the Qdrant engine retrieves the image embeddings stored within the collection that have the highest cosine similarity with the provided text.
+
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/search_similarity.jpg">
+
+## Run Solution
+In order to run the solution, follow these steps:
+1. Build Docker images for our services. Please note that this process may take some time as it involves installing all the necessary dependencies:
+    ```bash
      sudo docker-compose build
    ```
-This command is going to create two containers a MySQL container that contains the database for target fingerprints and a FastAPI container linked to the first container. This command also installs all the necessary requirements for this projects which are contained inside the **requirements.txt** file.
-- Run the following command inside the same folder and wait for the FastAPI server to start running:
-   ```bash
-     sudo docker-compose up 
-   ```
-- Open your web browser and go to http://localhost:8000/docs to access the FastAPI Swagger
-- Execute the first request one time only to store all fingerprints inside the database.
-- Go to the matching request, select your input fingerprint image to find its match and execute your request (this process can take a while depending on the image since it contains the preprocessing, the feature extraction and matching.)
-### On Local Machine
-- Start with configuring your environment variable
-  ```env
-     export DATABASE_URL=mysql+mysqlconnector://your_username:your_password@your_host:your_port/fingerprint
-     ```
-- Run the following command inside the **code** folder to install the different requirements:
-  ```bash
-     pip install -r requirements.txt
-   ```
-- Create a new database with MySQL server called: **fingerprint**.
-- Launch the app using:
-  ```bash
-     uvicorn main:app --reload
-   ```
-- Open your web browser and go to http://localhost:8000/docs to access the FastAPI Swagger
-- Execute the first request one time only to store all fingerprints inside the database.
-- Go to the matching request, select your input fingerprint image to find its match and execute your request (this process can take a while depending on the image since it contains the preprocessing, the feature extraction and matching.)
+2.  Create and start the containers based on the corresponding images that were created and wait for all the containers to start: 
+    ```bash
+     sudo docker-compose up
+    ```
+3. Once the containers are all running, navigate to: `http://localhost:3000/` through your brower and start searching.
 
-## Remark
-
-The **Swagger** folder contains images that demonstrate how to use it and the output of the matching process.
+## Evaluation
+### Accurate results
+### Inaccurate results
+### Areas to improve

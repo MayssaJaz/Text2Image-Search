@@ -80,6 +80,7 @@ In order to run the solution, follow these steps:
 - **Query =** Two dogs
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate1.png">
 It's evident that in the third image, there is both a dog and a cat present. This suggests that the cat was mistakenly perceived as a dog in our case.
+
 - **Query =** A woman with blond hair
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate2.png">
 A more complex query generated irrelevant results. As we can see, the only image that is accurate is the second one.

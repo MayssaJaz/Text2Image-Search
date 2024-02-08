@@ -65,27 +65,28 @@ In order to run the solution, follow these steps:
 ## Evaluation
 ### Accurate results
 - **Query =** Black dog
-<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_1.png">
+  ![Black dog](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_1.png)
 
 - **Query =** White shirt
-<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_2.png">
+  ![White shirt](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_2.png)
 
-- **Query=** Green grass
-<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_3.png">
+- **Query =** Green grass
+  ![Green grass](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_3.png)
 
-- **Query=** Red car
-<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_4.png">
+- **Query =** Red car
+  ![Red car](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_4.png)
 
 ### Inaccurate results
 - **Query =** Two dogs
-<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate1.png">
+  ![Two dogs](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate1.png)
 
 - **Query =** A woman with blond hair
-<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate2.png">
+  ![A woman with blond hair](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate2.png)
 
-- **Query=** White pants
-<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate3.png">
+- **Query =** White pants
+  ![White pants](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate3.png)
 
-- **Query=** Two cats
-<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate4.png">
+- **Query =** Two cats
+  ![Two cats](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate4.png)
+
 ### Areas to improve

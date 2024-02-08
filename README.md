@@ -88,5 +88,5 @@ In order to run the solution, follow these steps:
 
 - **Query =** Two cats
   ![Two cats](https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate4.png)
-
+  
 ### Areas to improve

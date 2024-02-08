@@ -99,9 +99,10 @@ In this scenario, it's evident that the color of the shirt and the pants were co
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate4.png">
 While the outcomes of this query was not as poor as those from previous queries, it's important to emphasize that the 5th image is entirely inaccurate as it doesn't even represent a picture of a cat.
 
-**Important remark:** Just to clarify, the inaccurate queries were not due to insufficient data. Each query had a minimum of five matching images. Therefore, we decided to analyze a dataset containing 1807 instances to verify if there were indeed images corresponding to the query before evaluating it with our search engine. 
+#### Important remark
+Just to clarify, the inaccurate queries were not due to insufficient data. Each query had a minimum of five matching images. Therefore, we decided to analyze a dataset containing 1807 instances to verify if there were indeed images corresponding to the query before evaluating it with our search engine. 
 
-**Explanation:** 
+#### Explanation 
 For the innacurate query results containing a number, the OpenAI CLIP model may encounter challenges with systematic tasks, particularly counting the number of objects (See: [OpenAI CLIP](https://openai.com/research/clip). In addition, the model may face difficulties in understanding the context of queries such as confusing the colors of the shirt and the pants, especially when dealing with data it hasn't been exposed to during training.
 
 ### Areas to improve

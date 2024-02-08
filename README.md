@@ -87,6 +87,7 @@ A more complex query generated irrelevant results. As we can see, the only image
 - **Query=** White pants
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate3.png">
 In this scenario, it's evident that the color of the shirt and the pants were confused, resulting in inaccurate outcomes in the 3rd, 4th, and 5th images.
+
 - **Query=** Two cats
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate4.png">
 While the outcomes of this query was not as poor as those from previous queries, it's important to emphasize that the 5th image is entirely inaccurate as it doesn't even represent a picture of a cat.

@@ -19,6 +19,7 @@ services:
       - qdrant
     environment:
       - DATASET_PATH=./images_project
+      - EMBEDDINGS_FOLDER=embeddings
       - MODEL_ID=openai/clip-vit-base-patch32
       - QDRANT_URL=http://qdrant_container:6333
       - COLLECTION_NAME=image_search

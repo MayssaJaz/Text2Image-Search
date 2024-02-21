@@ -4,6 +4,7 @@ import uuid
 import os
 from utils.embeddings_handlers.images_embeddings import get_all_images_embedding
 from utils.embeddings_handlers.text_embeddings import get_prompt_text
+from utils.batch_handler.batch_processing import load_batch_embeddings, upsert_batch_embeddings
 
 
 class QdrantVectorDatabase:
@@ -26,29 +27,28 @@ class QdrantVectorDatabase:
         list_files = os.listdir(directory_path)
         image_paths = [directory_path + '/' + path for path in list_files]
         print('Generating images embeddings...')
-        images_embeddings = get_all_images_embedding(
-            image_paths, self.device, self.model, self.processor)
+        embedding_size = get_all_images_embedding(
+            image_paths, 64, self.device, self.model, self.processor)
         print('Got all embeddings!')
         # Create a new collection to store our images embeddings
         self.client.recreate_collection(
             collection_name=os.environ['COLLECTION_NAME'],
             vectors_config=VectorParams(
-                size=len(images_embeddings[0]), distance=Distance.COSINE),
+                size=embedding_size, distance=Distance.COSINE),
         )
         # Waiting message
         print("Storing images embeddings. Please wait...")
-        # Upsert points (embeddings) into the created collection
-        for embedding, path in zip(images_embeddings, image_paths):
-            self.client.upsert(
-                collection_name=os.environ['COLLECTION_NAME'],
-                points=[
-                    PointStruct(
-                        id=str(uuid.uuid4()),
-                        vector=embedding,
-                        payload={"image_path": path}
-                    )
-                ]
-            )
+        # Upsert points (embeddings) into the created collection using batch processing
+        embeddings_folder = os.environ["EMBEDDINGS_FOLDER"]
+        list_files_embeddings = os.listdir(embeddings_folder)
+        images_paths_batches = [list_files[i:i+64]
+                                for i in range(0, len(list_files), 64)]
+        # Loop over embeddings files and stocking their vectors
+        for batch_num in range(1, len(list_files_embeddings) + 1):
+            batch_embeddings = load_batch_embeddings(
+                batch_num, embeddings_folder)
+            upsert_batch_embeddings(
+                self.client, os.environ['COLLECTION_NAME'], batch_embeddings, images_paths_batches[batch_num - 1])
         # Success message
         print("Embeddings stored successfully")
 

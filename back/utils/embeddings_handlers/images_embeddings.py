@@ -1,37 +1,55 @@
 from PIL import Image
+import numpy as np
+import os
 
 
-def get_single_image_embedding(image_path, device, model, processor):
+def save_batch_embeddings(embeddings_folder, embeddings, batch_num):
     """
-    Generates embeddings for a single image.
+    Save batch embeddings to a numpy file.
 
-    This function takes the path to an image file, loads and processes the image, 
-    generates embeddings using the specified CLIP model, converts the embeddings 
-    to a list format then returns the list of embeddings.
-
-    Args:
-        image_path (str): The file path to the image.
-        device (str): The device ('cuda' if available, otherwise 'cpu').
-        model (CLIPModel): The CLIP model used for generating embeddings.
-        processor (CLIPProcessor): The processor associated with the CLIP model.
-
-    Returns:
-        list: A list containing the embeddings generated for the input image.
+    Parameters:
+        embeddings_folder (str): Path to the folder where embeddings will be saved.
+        embeddings (numpy.ndarray): Batch of embeddings to be saved.
+        batch_num (int): Batch number identifier.
     """
-    # Generate embeddings for the image with image_path
-    image = processor(
-        text=None,
-        images=Image.open(image_path).convert("RGB"),
-        return_tensors="pt"
-    )["pixel_values"].to(device)
-    embedding = model.get_image_features(image)
-    # Convert the embeddings to list
-    embedding_as_list = embedding.squeeze().cpu().detach().numpy().tolist()
-    return embedding_as_list
+    filename = f"{embeddings_folder}/batch_{batch_num}_embeddings.npy"
+    np.save(filename, embeddings)
 
 
-def get_all_images_embedding(images_paths, device, model, processor):
-    # Loop over all images paths and generate their embeddings
-    images_embeddings = [get_single_image_embedding(
-        path, device, model, processor) for path in images_paths]
-    return images_embeddings
+def get_all_images_embedding(images_paths, batch_size, device, model, processor):
+    """
+    Extract embeddings for all images in batches.
+
+    Parameters:
+        images_paths (list): List of paths to image files.
+        batch_size (int): Size of each batch for processing.
+        device (torch.device): Device for computation (e.g., 'cpu' or 'cuda').
+        model (torch.nn.Module): Model for extracting image features.
+        processor (transformers.Processor): Processor for text and image inputs.
+    """
+    num_images = len(images_paths)
+    embeddings_folder = os.environ["EMBEDDINGS_FOLDER"]
+    os.mkdir(embeddings_folder)
+    for i in range(0, num_images, batch_size):
+        batch_paths = images_paths[i:i+batch_size]
+        batch_embeddings = []
+        batch_images = []
+        for path in batch_paths:
+            with Image.open(path) as img:
+                image = img.convert("RGB")
+            batch_images.append(image)
+
+        batch_inputs = processor(
+            text=None,
+            images=batch_images,
+            return_tensors="pt",
+            padding=True
+        )
+        batch_inputs = {k: v.to(device) for k, v in batch_inputs.items()}
+        batch_embedding = model.get_image_features(**batch_inputs)
+        batch_embedding = batch_embedding.cpu().detach().numpy()
+        for emb in batch_embedding:
+            batch_embeddings.append(emb.squeeze().tolist())
+        save_batch_embeddings(
+            embeddings_folder, batch_embeddings, i // batch_size + 1)
+    return len(batch_embeddings[0])

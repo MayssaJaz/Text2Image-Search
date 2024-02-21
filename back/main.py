@@ -15,7 +15,8 @@ app.add_middleware(
 )
 client = None
 # Mount the directory containing the images to serve them statically
-app.mount("/images", StaticFiles(directory="dataset"), name="dataset")
+app.mount("/images", StaticFiles(directory="images_project"),
+          name="images_project")
 
 
 @app.on_event("startup")

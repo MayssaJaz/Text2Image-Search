@@ -10,6 +10,7 @@ services:
     volumes:
       - ./data/qdrant_storage:/qdrant/storage
   fastapi:
+    container_name: back_end
     build:
       context: back
     ports:
@@ -17,7 +18,7 @@ services:
     depends_on:
       - qdrant
     environment:
-      - DATASET_PATH=./dataset
+      - DATASET_PATH=./images_project
       - MODEL_ID=openai/clip-vit-base-patch32
       - QDRANT_URL=http://qdrant_container:6333
       - COLLECTION_NAME=image_search

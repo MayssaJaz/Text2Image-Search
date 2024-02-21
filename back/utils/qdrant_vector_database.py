@@ -21,6 +21,7 @@ class QdrantVectorDatabase:
         creates a new collection in the QDRANT database to store the embeddings, 
         and then inserts the embeddings along with their corresponding image paths 
         into the created collection."""
+        # Get all images
         directory_path = os.environ['DATASET_PATH']
         list_files = os.listdir(directory_path)
         image_paths = [directory_path + '/' + path for path in list_files]

@@ -63,7 +63,8 @@ In order to run the solution, follow these steps:
 3. Once the containers are all running, navigate to: `http://localhost:3000/` through your brower and start searching.
 
 ## Evaluation
-### Accurate results
+### Before Fine-tuning
+#### Accurate results
 - **Query =** Black dog
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_1.png">
 
@@ -79,7 +80,7 @@ In order to run the solution, follow these steps:
 - **Query=** Red car
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_4.png">
 
-### Inaccurate results
+#### Inaccurate results
 - **Query =** Two dogs
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate1.png">
 It's evident that in the third image, there is both a dog and a cat present. This suggests that the cat was mistakenly perceived as a dog in our case.
@@ -99,14 +100,46 @@ In this scenario, it's evident that the color of the shirt and the pants were co
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate4.png">
 While the outcomes of this query was not as poor as those from previous queries, it's important to emphasize that the 5th image is entirely inaccurate as it doesn't even represent a picture of a cat.
 
-#### Important remark
+##### Important remark
 Just to clarify, the inaccurate queries were not due to insufficient data. Each query had a minimum of five matching images. Therefore, we decided to analyze a dataset containing 1803 instances to verify if there were indeed images corresponding to the query before evaluating it with our search engine. 
 
-#### Explanation 
+##### Explanation 
 For the innacurate query results containing a number, the OpenAI CLIP model may encounter challenges with systematic tasks, particularly counting the number of objects (See: [OpenAI CLIP](https://openai.com/research/clip) ). In addition, the model may face difficulties in understanding the context of queries such as confusing the colors of the shirt and the pants, especially when dealing with data it hasn't been exposed to during training.
 
+### After Fine-tuning: 
+#### Steps
+After generating our labeled dataset inside `docs/labeled_data/data.csv` (See the process: `docs/notebook/captions_generation.ipynb`) that has two columns the file name and the caption of each image in our dataset using the OpenClip **CoCa (Contrastive Captioners)** that was designed for generating images captions.), we managed to fine-tune our model using the generated captions to better enhance text-to-image similarity. This refinement process is detailed in `docs/notebook/fine_tune_clip_model.ipynb`.
+#### Results
+We conduct a repetition of the previous queries and proceed to evaluate their performance through testing:
+- **Query =** Black dog
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/6.png">
+
+- **Query =** White shirt
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/5.png">
+
+- **Query=** Green grass
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/7.png">
+
+- **Query=** Red car
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/8.png">
+
+- **Query =** A woman with blond hair
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/1.png">
+
+- **Query =** Two dogs
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/2.png">
+
+- **Query=** White pants
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/4.png">
+
+- **Query=** Two cats
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/3.png">
+
+
+
+
 ### Areas to improve
-- Having a labeled dataset containing pairs of images and corresponding captions, the caption serves as the ground truth against which we evaluate our search results. (Note: we already generated our labeled dataset inside `docs/labeled_data/data.csv` (See the process: `docs/notebook/captions_generation.ipynb`) that has two columns the file name and the caption of each image in our dataset using the OpenClip **CoCa (Contrastive Captioners)** that was designed for generating images captions.)
+
 
 - Ensure the generation of queries that are human-generated and cover a broad spectrum of topics and concepts that are relevant to the dataset. These queries should encompass diverse aspects, including concepts such as colors, shapes, and proximity of two objects as well as more intricate queries requiring contextual understanding, such as those that are prone to misinterpretation in evaluations (e.g the color of a shirt = the color of pants in our case).
 

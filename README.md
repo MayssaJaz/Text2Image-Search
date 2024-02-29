@@ -54,7 +54,7 @@ After this process, the server becomes capable of accepting requests to search f
 In order to run the solution, follow these steps:
 1. If you want to run the original model, remove the following line from `docker-compose.yml`:
    ```bash
-      - MODEL_PARAMS_PATH=weights/optimized_model.pt
+    - MODEL_PARAMS_PATH=weights/optimized_model.pt
    ```
    Otherwise, download the weights of the fine-tuned model (link inside the resources section below) and place them inside `back/weights`.
    

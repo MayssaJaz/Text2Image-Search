@@ -52,18 +52,25 @@ After this process, the server becomes capable of accepting requests to search f
 
 ## Run Solution
 In order to run the solution, follow these steps:
-1. Build Docker images for our services. Please note that this process may take some time as it involves installing all the necessary dependencies:
+1. If you want to run the original model, remove the following line from `docker-compose.yml`:
+   ```bash
+    - MODEL_PARAMS_PATH=weights/optimized_model.pt
+   ```
+   Otherwise, download the weights of the fine-tuned model (link inside the resources section below) and place them inside `back/weights`.
+   
+3. Build Docker images for our services. Please note that this process may take some time as it involves installing all the necessary dependencies:
     ```bash
      sudo docker-compose build
    ```
-2.  Create and start the containers based on the corresponding images that were created and wait for all the containers to start: 
+4.  Create and start the containers based on the corresponding images that were created and wait for all the containers to start: 
     ```bash
      sudo docker-compose up
     ```
-3. Once the containers are all running, navigate to: `http://localhost:3000/` through your brower and start searching.
+5. Once the containers are all running, navigate to: `http://localhost:3000/` through your brower and start searching.
 
 ## Evaluation
-### Accurate results
+### Before Fine-tuning
+#### Accurate results
 - **Query =** Black dog
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_1.png">
 
@@ -79,7 +86,7 @@ In order to run the solution, follow these steps:
 - **Query=** Red car
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/accurate/accurate_4.png">
 
-### Inaccurate results
+#### Inaccurate results
 - **Query =** Two dogs
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate1.png">
 It's evident that in the third image, there is both a dog and a cat present. This suggests that the cat was mistakenly perceived as a dog in our case.
@@ -99,24 +106,61 @@ In this scenario, it's evident that the color of the shirt and the pants were co
 <img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/inaccurate/inaccurate4.png">
 While the outcomes of this query was not as poor as those from previous queries, it's important to emphasize that the 5th image is entirely inaccurate as it doesn't even represent a picture of a cat.
 
-#### Important remark
+##### Important remark
 Just to clarify, the inaccurate queries were not due to insufficient data. Each query had a minimum of five matching images. Therefore, we decided to analyze a dataset containing 1803 instances to verify if there were indeed images corresponding to the query before evaluating it with our search engine. 
 
-#### Explanation 
+##### Explanation 
 For the innacurate query results containing a number, the OpenAI CLIP model may encounter challenges with systematic tasks, particularly counting the number of objects (See: [OpenAI CLIP](https://openai.com/research/clip) ). In addition, the model may face difficulties in understanding the context of queries such as confusing the colors of the shirt and the pants, especially when dealing with data it hasn't been exposed to during training.
 
+### After Fine-tuning: 
+#### Steps
+After generating our labeled dataset inside `docs/labeled_data/data.csv` (See the process: `docs/notebook/captions_generation.ipynb`) that has two columns the file name and the caption of each image in our dataset using the OpenClip **CoCa (Contrastive Captioners)** that was designed for generating images captions.), we managed to fine-tune our model using the generated captions to better enhance text-to-image similarity. This refinement process is detailed in `docs/notebook/fine_tune_clip_model.ipynb`.Note that we used Contrastive Loss, which serves the purpose of maximizing the cosine similarity between embeddings of similar texts and images while simultaneously minimizing the similarity between embeddings of different texts and images. This approach is aimed at preventing the model from forgetting the patterns it learned during its pre-training stage (See: [Finetune like you pretrain](https://arxiv.org/pdf/2212.00638.pdf) ).
+
+#### Results
+We conduct a repetition of the previous queries and proceed to evaluate their performance through testing:
+- **Query =** Black dog
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/6.png">
+
+- **Query =** White shirt
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/5.png">
+
+- **Query=** Green grass
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/7.png">
+
+- **Query=** Red car
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/8.png">
+
+- **Query =** A woman with blond hair
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/1.png">
+
+- **Query =** Two dogs
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/2.png">
+
+- **Query=** White pants
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/4.png">
+
+- **Query=** Two cats
+<img src="https://github.com/MayssaJaz/Text2Image-Search/blob/main/docs/results/fine_tuned/3.png">
+
+#### Discussion
+After testing the same queries with the new version of the model following fine-tuning, significant improvements are evident across most queries. The model now excels in accurately identifying two dogs and two cats. Additionally, it successfully recognizes white pants and a woman with blond hair. However, there is a slight inconsistency in identifying the pattern of white shirts. In the first and second images, the model identified two blue shirts with a hint of white, which is not entirely incorrect. To enhance the model's proficiency in recognizing such patterns, incorporating additional data containing these features (such as white shirts) and further fine-tuning them will undoubtedly improve its effectiveness.
+
+
+
 ### Areas to improve
-- Having a labeled dataset containing pairs of images and corresponding captions, the caption serves as the ground truth against which we evaluate our search results. (Note: we already generated our labeled dataset inside `docs/labeled_data/data.csv` (See the process: `docs/notebook/captions_generation.ipynb`) that has two columns the file name and the caption of each image in our dataset using the OpenClip **CoCa (Contrastive Captioners)** that was designed for generating images captions.)
 
 - Ensure the generation of queries that are human-generated and cover a broad spectrum of topics and concepts that are relevant to the dataset. These queries should encompass diverse aspects, including concepts such as colors, shapes, and proximity of two objects as well as more intricate queries requiring contextual understanding, such as those that are prone to misinterpretation in evaluations (e.g the color of a shirt = the color of pants in our case).
 
 - For the evaluation phase, since we are dealing with a search engine problem, we can use metrics that are widely used to measure how relevant are documents to the a specific query such as **Precision@K**, **Recall@K** and **Normalized Discounted Cumulative Gain@K (nDCG@K)**.
 ## Next Step
-- Fine-tune our model by using the labeled dataset generated in  `docs/labeled_data/data.csv`. We'll then assess its performance across various queries we're preparing.
 
-- Expand our dataset by acquiring more data and labeling it, followed by retraining the model as part of an MLOps pipeline.
+- [x]  Fine-tune our model by using the labeled dataset generated in  `docs/labeled_data/data.csv`
 
-- Exlore alternative models such as the **BLIP** model and benchmark the results to assess their effectiveness based on various criterias (Relevance / Speed / Resource Consumption...).
+- [ ] Assess its performance across various queries we're preparing.
+
+- [ ] Expand our dataset by acquiring more data and labeling it, followed by retraining the model as part of an MLOps pipeline.
+
+- [ ] Exlore alternative models such as the **BLIP** model and benchmark the results to assess their effectiveness based on various criterias (Relevance / Speed / Resource Consumption...).
 ## Resources
 - **Kaggle dataset:** https://www.kaggle.com/datasets/pavansanagapati/images-dataset
 - **CLIP model on hugging face:** https://huggingface.co/openai/clip-vit-base-patch32
@@ -126,3 +170,5 @@ For the innacurate query results containing a number, the OpenAI CLIP model may 
 - **Image classification Benchmark (for generating captions)** https://paperswithcode.com/sota/image-classification-on-imagenet
 - **OpenClip repository:** https://github.com/mlfoundations/open_clip/tree/main
 - **BLIP model:** https://huggingface.co/docs/transformers/model_doc/blip
+- **Finetune like you pretrain:** https://arxiv.org/pdf/2212.00638.pdf
+- **Link to parameters:** https://drive.google.com/file/d/1Ym0BHz33dY_TFHuUCADM8186e7lFpoad/view?usp=drive_link

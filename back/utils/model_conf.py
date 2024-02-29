@@ -26,5 +26,12 @@ def get_model_info():
     processor = CLIPProcessor.from_pretrained(model_ID)
     # Get the tokenizer
     tokenizer = CLIPTokenizer.from_pretrained(model_ID)
+    # Check if the environment variable exists
+    model_params_path = os.environ.get('MODEL_PARAMS_PATH')
+    if model_params_path is not None:
+        # Load the parameters
+        state_dict = torch.load(model_params_path, map_location=device)
+        # Load the state_dict into the model
+        model.load_state_dict(state_dict)
     # Return model, processor & tokenizer
     return device, model, processor, tokenizer

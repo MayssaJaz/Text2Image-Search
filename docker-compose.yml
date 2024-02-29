@@ -23,6 +23,7 @@ services:
       - MODEL_ID=openai/clip-vit-base-patch32
       - QDRANT_URL=http://qdrant_container:6333
       - COLLECTION_NAME=image_search
+      - MODEL_PARAMS_PATH=weights/optimized_model.pt
   front:
     build:
       context: front
